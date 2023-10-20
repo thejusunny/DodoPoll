@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Dodo Poll</title>
+    <script src="fontfaceobserver.standalone.js"> </script>
+    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="dist/styles.css">
+   
+</head>
+<body class="h-screen  bg-yellow-50 flex items-center justify-center">
+    
+    <div class=" w-19/20 h-20/21 bg-blue-100 flex flex-col bg-opacity-0" id="poll-page">
+            <div class=" w-full  bg-slate-500 flex bg-opacity-0 "> <!--Top flex -->
+                
+                <div class="bg-red-500 w-2/3 flex flex-row justify-around  bg-opacity-0"> 
+                    
+                    <label class="font-Monteserrat text-base sm:text-2xl md:text-3xl lg:text-4xl ">Reward</label>   
+                    <div class="bg-purple-500  flex flex-row justify-between w-1/6 bg-opacity-0">
+                        <img class="w-max h-max py-1.5" src="assets/coinstack.png" alt="">
+                        <label class="font-Monteserrat py-1 text-base sm:text-2xl md:text-3xl lg:text-4xl" id="l-coin-poll">1</label>  
+                    </div>
+                     <div class="bg-purple-500 flex flex-row justify-around  w-2/8 bg-opacity-0">
+                        <img class="w-max h-max py-1.5" src="assets/xpicon.png" alt="">
+                        <label class="font-Monteserrat py-1 text-base sm:text-2xl md:text-3xl lg:text-4xl" id="l-xp-poll">+20</label>  
+                    </div>
+                     
+                </div>
+               
+            </div>
+            <div class="w-full h-86p flex flex-row bg-stone-800 bg-opacity-0 ">
+                <div class="flex flex-grow flex-col items-center pt-5  relative gap-2">
+                    <img class="w-1/2 h-auto py-1.5" src="assets/trendingicon.png" alt="">
+                    <div class="flex h-11/12 w-full  justify-center relative" >
+                        <img class="w-1/3 sm:w-1/3  h-full"  src="assets/meterbg.png" alt="" id="img-meterbg1-poll">
+                        <div class="w-1/3 sm:w-1/3 h-full absolute rounded-xl bg-blue-400  "  style="height: 0%; bottom:0" id="img-meterfill1-poll"></div>
+                        <!-- <img class="w-1/3 sm:w-1/3 h-full absolute  "  style="height: 80%; bottom:0" src="assets/meterfill.png" alt=""  id="img-meterfill1-poll"> -->
+                        <div class="flex flex-col  h-auto absolute   " style="width: 100%; bottom:0" id="div-knob1-poll">
+                            <img class="  bottom-0 rounded-full border-2"  src="assets/knob1.jpg"  id="img-knob1-poll" alt="" >
+                            <div class=" w-[120%] bg-blue-200 rounded-lg flex justify-center">
+                                <label class="font-Monteserrat-bold text-sm text-black "  id="l-progress1-poll">0% </label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                        
+                </div>
+                <div class="w-4/5  pt-5 flex  flex-col justify-around bg-transparent items-center">
+                    <label class="font-Monteserrat text-black text-base sm:text-2xl md:text-3xl lg:text-4xl " id="l-question-poll">
+                        Who will become the 15th prime minister of India ?
+                    </label>
+                    <div class="w-full h-3/5 flex rounded-lg items-start overflow-hidden pt-5 ">
+                        <img class="w-20/21 h-auto  rounded-lg  " src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202303/rahul-gandhi-three_four.jpeg?VersionId=M6VpJY1Uy4UhPLxppk_JqKqWIovQV1t9" alt="" id="img-main-poll">
+                    </div>
+                    
+                    <div class="flex flex-wrap w-20/21 flex-1 justify-center items-end" id="div-options-poll" >
+                        <button class="flex w-1/2 h-11/12 relative" id="btn-choice1-poll">
+                            <div  class="w-19/20 h-full bg-gray-200 rounded-lg shadow-lg" >
+                            </div>
+                            <!-- <img  class="w-full h-[100%]" src="../assets/choicebutton-default.png"> -->
+                            <div class="flex absolute inset-5 sm:inset-10 md:inset-10 justify-center items-center">
+                                <label class="font-Monteserrat text-black text-base sm:text-2xl md:text-3xl lg:text-4xl " id="l-choice1-poll">
+                                    Narendra Modi
+                                </label>
+                            </div>
+                        </button>    
+
+                        <button class="flex w-1/2 h-11/12 relative justify-end" id="btn-choice2-poll">
+                            <div  class="w-19/20 h-full bg-gray-200 rounded-lg shadow-lg">
+                            </div>
+                            <!-- <img class="w-full h-[100%]" src="../assets/choicebutton-default.png"> -->
+                            <div class=" flex absolute inset-5 sm:inset-10 md:inset-10 lg:inset-12  justify-center items-center">
+                                <label class="font-Monteserrat text-black text-base sm:text-2xl md:text-3xl lg:text-4xl  " id="l-choice2-poll">
+                                    Rahul Ghandi
+                                </label>
+                            </div>
+                            
+                        </button>
+                        <!-- <button class="flex-1 w-1/5 h-auto relative" id="btn-choice1-poll">
+                                <img  class="w-full h-[100%]" src="../assets/choicebutton-default.png">
+                                <div class="flex absolute inset-5 sm:inset-10 md:inset-10 justify-center items-center">
+                                    <label class="font-Monteserrat text-black text-base sm:text-2xl md:text-3xl lg:text-4xl " id="l-option1-poll">
+                                        Narendra Modi
+                                    </label>
+                                </div>
+                            </button> -->
+                            <!-- <button class=" flex-1 w-1/2 h-auto relative" id="btn-choice2-poll">
+                                <img class="w-full h-[100%]" src="assets/choicebutton-default.png">
+                                <div class=" flex absolute inset-5 sm:inset-10 md:inset-10 lg:inset-12  justify-center items-center">
+                                    <label class="font-Monteserrat text-black text-base sm:text-2xl md:text-3xl lg:text-4xl  " id="l-option2-poll">
+                                        Rahul Ghandi
+                                    </label>
+                                </div>
+                                
+                            </button> -->
+                    </div>
+                </div>
+                <div class="flex flex-grow flex-col items-center pt-5  relative gap-2">
+                    <img class="w-1/2 h-auto py-1.5" src="assets/trendingicon.png" alt="">
+                    <div class="flex h-11/12 w-full  justify-center relative" >
+                        <img class="w-1/3 sm:w-1/3  h-full"  src="assets/meterbg.png" alt="" id="img-meterbg2-poll">
+                        <div class="w-1/3 sm:w-1/3 h-full absolute rounded-xl bg-blue-400  "  style="height: 0%; bottom:0" id="img-meterfill2-poll"></div>
+                        <!-- <img class="w-1/3 sm:w-1/3 h-full absolute  "  style="height: 80%; bottom:0" src="assets/meterfill.png" alt="" id="img-meterfill2-poll"> -->
+                        <div class="flex flex-col  h-auto absolute  bottom-0  " style="width: 100%; bottom:0" id="div-knob2-poll">
+                            <img class="  bottom-0 rounded-full border-2"  src="assets/knob2.jpg"  id="img-knob2-poll" alt="" >
+                            <div class=" w-[120%] bg-blue-200 rounded-lg flex justify-center">
+                                <label class="font-Monteserrat-bold text-sm text-black "  id="l-progress2-poll">0% </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <script src="../app.js"></script>
+</body>
+
+</html>
+  
