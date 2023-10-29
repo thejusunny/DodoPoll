@@ -4,7 +4,24 @@ import { PollManager } from "./pollmanager.js";
 import { PollData } from "./polldata.js";
 let url = "https://thejusunny.github.io/DodoPoll/";
 let deviceID = localStorage.getItem('deviceID');
-let currentUser = new PollUser();
+let currentUser = new PollUser()
+const minSplashTime = 3;
+let loadingCompleted = false;
+const startTime = performance.now();
+const splashInterval = setInterval(()=>{
+  const time = performance.now();
+  if((time-startTime)/1000>minSplashTime && loadingCompleted)
+  {
+    clearInterval(splashInterval);
+    pollEntry();
+  }
+},100);
+const StartInstruction =
+{
+  NewUser:'NewUser',
+  OldUser:'OldUser'
+}
+let startInstruction = null;
 if(!deviceID)
 { 
     deviceID = uuid.v4();
@@ -194,6 +211,7 @@ async function checkForUser()
           //pollManager = new PollManager(currentPollUsers);
           console.log(currentPollUsers);
           checkForUserPresence();
+          loadingCompleted  = true;
           //startPoll();
         });
   }
@@ -204,7 +222,8 @@ async function checkForUser()
     {
       console.log("New user");
       updatePollUI();
-      startPoll();
+      startInstruction = StartInstruction.NewUser;
+      //startPoll();
     }
     else
     {
@@ -213,17 +232,29 @@ async function checkForUser()
       currentUser.choiceNo = user.choiceNo;
       currentUser.choiceName = user.choiceName;
       updatePollUI();
+      startInstruction = StartInstruction.OldUser;
+      
+      
+    }
+  }
+  function pollEntry()
+  {
+    if(startInstruction == StartInstruction.NewUser)
+    {
+      startPoll();
+    }
+    else
+    {
       if(isAGuestUser())
       {
         console.log("Existing Guest User");
-        showDisabledPollPage(false);
+        showDisabledPollPage(true);
       }
       else
       {
         console.log("Existing Signed In User");
         showDisabledPollPage(true);
       }
-      
     }
   }
   function savePollStrengthLocally(pollStrength)

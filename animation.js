@@ -195,10 +195,8 @@ export class Animation {
       const mills = this.duration * 1000;
       if (!this.startTime) {
         this.startTime = time;
-        console.log("cache"+ this.obj.id);
      
         const x = time - this.startTime;
-        console.log("Progress"+ x/mills);
       }
       const elapsedTime = time - this.startTime;
       var t = elapsedTime/mills;
