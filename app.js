@@ -411,7 +411,6 @@ function updatePollUI()
 }
 function OptionSelected(optionNo)
 {
-    const bgDiv = button.querySelector("div");
     const newUser ={
       name: currentUser.userName,
       choiceNo: Number(optionNo),
