@@ -8,6 +8,32 @@ let currentUser = new PollUser()
 const minSplashTime = 3;
 let loadingCompleted = false;
 const startTime = performance.now();
+
+const buttonclickAudioPlayer = document.getElementById('button-audio');
+const loadingAudioPlayer = document.getElementById('loading-audio');
+const audioPlayers = new Array();
+audioPlayers.push(buttonclickAudioPlayer);
+audioPlayers.push(loadingAudioPlayer);
+audioPlayers.forEach(player => {
+  player.volume = 0.4;
+  player.muted = false;
+});
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden)
+  {
+    audioPlayers.forEach(player => {
+      player.muted = true;
+    });
+  }
+  else
+  {
+    audioPlayers.forEach(player => {
+      player.muted = false;
+    });
+  }
+});
+
 const splashInterval = setInterval(()=>{
   const time = performance.now();
   if((time-startTime)/1000>minSplashTime && loadingCompleted)
@@ -27,10 +53,7 @@ if(!deviceID)
     deviceID = uuid.v4();
     localStorage.setItem('deviceID', deviceID);
 }
-const pollStats ={
-    id:'#1',
-    progress: ["45","55"]
-}
+
 function getLocalUserData()
 {
   return {
@@ -125,7 +148,7 @@ async function checkForUser()
     if(cachedUserData.email == localUser.email)
     {
       await createUser(cachedUserData);
-      console.log("Created a local user");
+      console.log("Created a local user: "+ cachedUserData.email);
       fetchAllPollUsers();
       return;
     }
@@ -183,7 +206,6 @@ async function checkForUser()
       }
     });
   }
-  let currentUsers;
   let currentPollUsers = new Array();
   async function fetchAllPollUsers()
   {
@@ -281,6 +303,7 @@ async function checkForUser()
       const signInPrompt = document.getElementById("div-siginprompt-poll");
       signInPrompt.style.display ='flex'
     }
+    loadingAudioPlayer.play();
     animatePollStats(currentUser.choiceNo);
   }
   function isAGuestUser()
@@ -387,6 +410,7 @@ const fillMeterAnimation1 = new Animation( fillImage1);
 const knobAnimation1 = new Animation( knobdiv1, progresstxt1);
 const fillMeterAnimation2 = new Animation( fillImage2);
 const knobAnimation2 = new Animation( knobdiv2,progresstxt2);
+const meterDuration = 3.2;
 const btn1 = getElement("option1-btn");
 btn1.addEventListener("click", () => {
   OptionSelected(1);
@@ -396,7 +420,18 @@ const btn2 = getElement("option2-btn");
 btn2.addEventListener("click", () => {
   OptionSelected(2);
 });
-const meterDuration = 3;
+let audioEnabled = true;
+const audioButton = document.getElementById('btn-audiotoggle-quiz');
+const audioImage = document.getElementById('img-audio-quiz');
+audioButton.addEventListener('click',()=>{
+  audioEnabled = !audioEnabled;
+  const volume = audioEnabled?0.4:0;
+  audioPlayers.forEach(audioPlayer => {
+    audioPlayer.volume = volume;
+  });
+  audioImage.src = audioEnabled? "./assets/soundon.png": "./assets/soundoff.png";
+});
+
 function updatePollUI()
 {
  
@@ -421,9 +456,13 @@ function OptionSelected(optionNo)
     currentPollUsers.push(newUser);
     pollManager = new PollManager(currentPollUsers);
     
-    
-    animatePollStats(optionNo);
-    sendPollstatsToServer(currentUser);
+    buttonclickAudioPlayer.play();
+    setTimeout(()=>{
+      loadingAudioPlayer.play();
+      animatePollStats(optionNo);
+      sendPollstatsToServer(currentUser);
+    },500);
+   
 }
 function animatePollStats(optionNo)
 {
