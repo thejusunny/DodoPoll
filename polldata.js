@@ -10,6 +10,7 @@ export class PollData
         this.image= poll.data.image;
         this.rewards= poll.data.rewards;
         this.knobs=poll.data.knobs;
+        this.endDate = poll.endDate;
      
     }
     getItem()

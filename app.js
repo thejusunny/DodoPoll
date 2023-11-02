@@ -96,6 +96,42 @@ function loadSplashScreen()
     //cacheUserDataFromApp({email:'Athul@example.com', userName:'Athul'});
     cacheUserDataFromApp(getLocalUserData());
  }
+ const daysLabel = document.getElementById('l-days-poll');
+const hoursLabel = document.getElementById('l-hours-poll');
+const minutesLabel = document.getElementById('l-minutes-poll');
+const pollEndDiv = document.getElementById('div-quizend-poll');
+const millisecondsInSecond = 1000;
+const millisecondsInMinute = 60 * millisecondsInSecond;
+const millisecondsInHour = 60 * millisecondsInMinute;
+const millisecondsInDay = 24 * millisecondsInHour;
+let remainingTime = null;
+function showRemainingTime()
+{
+  const localDate = new Date();
+  const utcDate = new Date(localDate.toISOString());
+  const endDate = new Date(pollData.endDate);
+  const timeDifference = endDate - utcDate; 
+  
+  const days = Math.max( Math.floor(timeDifference / millisecondsInDay),0);
+  const hours = Math.max( Math.floor((timeDifference % millisecondsInDay) / millisecondsInHour),0);
+  const minutes = Math.max( Math.floor((timeDifference % millisecondsInHour) / millisecondsInMinute),0);
+  const seconds = Math.max( Math.floor((timeDifference % millisecondsInMinute) / millisecondsInSecond),0);
+  remainingTime = 
+  {
+    days: days,
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds
+  }
+  daysLabel.textContent = remainingTime.days.toString();
+  hoursLabel.textContent = remainingTime.hours.toString();
+  minutesLabel.textContent = remainingTime.minutes.toString();
+  console.log(hasPollExpired());
+}
+function hasPollExpired()
+{
+  return (remainingTime.days<=0&& remainingTime.hours<=0&& remainingTime.minutes<=0);
+}
 
   //*******Call this function from flutter webview widget********
 
@@ -126,6 +162,7 @@ async function getPollInformation()
     }).then(data=>{
       
       pollData = new PollData(data.poll);
+      showRemainingTime();
       console.log(data );
       checkForUser();
       currentUser.email = cachedUserData?.email;
@@ -237,9 +274,16 @@ async function checkForUser()
           //startPoll();
         });
   }
+  const loadingDiv = document.getElementById("div-loading-poll");
   function checkForUserPresence()
   {
     const index = currentPollUsers.findIndex((user)=> user.email == currentUser.email);
+    if(hasPollExpired())
+    {
+      loadingDiv.style.display = 'none';
+      pollEndDiv.style.display= 'flex';
+      return;
+    }
     if(index<0)
     {
       console.log("New user");
@@ -265,12 +309,12 @@ async function checkForUser()
     {
       startPoll();
     }
-    else
+    else if(startInstruction == StartInstruction.OldUser)
     {
       if(isAGuestUser())
       {
         console.log("Existing Guest User");
-        showDisabledPollPage(true);
+        showDisabledPollPage(false);
       }
       else
       {
