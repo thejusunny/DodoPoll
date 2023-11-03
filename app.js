@@ -275,6 +275,14 @@ async function checkForUser()
         });
   }
   const loadingDiv = document.getElementById("div-loading-poll");
+  const loginDiv = document.getElementById('div-login-poll');
+  const loginButton = document.getElementById('btn-login-poll');
+  loginButton.addEventListener('click',sendLoginEvent)
+  function sendLoginEvent()
+  {
+    console.log("user trying to log in");
+  }
+
   function checkForUserPresence()
   {
     const index = currentPollUsers.findIndex((user)=> user.email == currentUser.email);
@@ -293,12 +301,21 @@ async function checkForUser()
     }
     else
     {
-      
-      const user = currentPollUsers[index];
-      currentUser.choiceNo = user.choiceNo;
-      currentUser.choiceName = user.choiceName;
-      updatePollUI();
-      startInstruction = StartInstruction.OldUser;
+      if(isAGuestUser())
+      {
+        loginDiv.style.display ='flex';
+        loadingDiv.style.display = 'none';
+        return;
+      }
+      else
+      {
+        const user = currentPollUsers[index];
+        currentUser.choiceNo = user.choiceNo;
+        currentUser.choiceName = user.choiceName;
+        updatePollUI();
+        startInstruction = StartInstruction.OldUser;
+      }
+     
       
       
     }
