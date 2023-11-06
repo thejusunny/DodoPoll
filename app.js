@@ -67,14 +67,14 @@ function cacheUserDataFromApp(data)
   if(parsedData.userName==''|| parsedData.email=='' )
     parsedData = getLocalUserData();
   cachedUserData = parsedData;
-  getQuizInformation();
+  getPollInformation();
 }
 function cacheUserDataLocally(data)
 {
   const parsedData = data;
   //const parsedData = JSON.parse(data);
   cachedUserData = parsedData;
-  getQuizInformation();
+  getPollInformation();
 }
 const splashDiv = document.getElementById('div-splash-poll');
 loadSplashScreen();
@@ -100,7 +100,7 @@ function loadSplashScreen()
     const animation2 = lottie.loadAnimation(animationConfig2);
     /* Start the application after user data is cached locally or from flutter app */
     //cacheUserDataFromApp({email:'Athul@example.com', userName:'Athul'});
-    //cacheUserDataFromApp(getLocalUserData());
+    //cacheUserDataLocally(getLocalUserData());
  }
  const daysLabel = document.getElementById('l-days-poll');
 const hoursLabel = document.getElementById('l-hours-poll');
@@ -308,7 +308,7 @@ async function checkForUser()
     }
     else
     {
-      if(isAGuestUser())
+      if(!isAGuestUser())
       {
         loginDiv.style.display ='flex';
         loadingDiv.style.display = 'none';
@@ -338,7 +338,7 @@ async function checkForUser()
       if(isAGuestUser())
       {
         console.log("Existing Guest User");
-        showDisabledPollPage(false);
+        showDisabledPollPage(true);
       }
       else
       {
