@@ -1,4 +1,4 @@
-export class PollData
+ class PollData
 {
     constructor(poll)
     {

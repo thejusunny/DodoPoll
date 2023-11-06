@@ -1,5 +1,4 @@
-
-export class Animation {
+class Animation {
     constructor(obj, textObj = null) {
       this.duration = null;
       this.startTime = null;

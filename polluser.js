@@ -1,4 +1,4 @@
-export class PollUser
+class PollUser
 {
     constructor()
     {

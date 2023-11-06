@@ -1,7 +1,3 @@
-import { Animation } from "./animation.js";
-import { PollUser } from "./polluser.js";
-import { PollManager } from "./pollmanager.js";
-import { PollData } from "./polldata.js";
 let url = "https://thejusunny.github.io/DodoPoll/";
 let deviceID = localStorage.getItem('deviceID');
 let currentUser = new PollUser()
@@ -65,10 +61,20 @@ let cachedUserData;
 let pollData;
 function cacheUserDataFromApp(data)
 {
+  console.log(data);
+  // const parsedData = data;
+  let parsedData = JSON.parse(data);
+  if(parsedData.userName==''|| parsedData.email=='' )
+    parsedData = getLocalUserData();
+  cachedUserData = parsedData;
+  getQuizInformation();
+}
+function cacheUserDataLocally(data)
+{
   const parsedData = data;
   //const parsedData = JSON.parse(data);
   cachedUserData = parsedData;
-  getPollInformation();
+  getQuizInformation();
 }
 const splashDiv = document.getElementById('div-splash-poll');
 loadSplashScreen();
@@ -94,7 +100,7 @@ function loadSplashScreen()
     const animation2 = lottie.loadAnimation(animationConfig2);
     /* Start the application after user data is cached locally or from flutter app */
     //cacheUserDataFromApp({email:'Athul@example.com', userName:'Athul'});
-    cacheUserDataFromApp(getLocalUserData());
+    //cacheUserDataFromApp(getLocalUserData());
  }
  const daysLabel = document.getElementById('l-days-poll');
 const hoursLabel = document.getElementById('l-hours-poll');
@@ -280,6 +286,7 @@ async function checkForUser()
   loginButton.addEventListener('click',sendLoginEvent)
   function sendLoginEvent()
   {
+    window.loginRequest?.postMessage("login"); 
     console.log("user trying to log in");
   }
 
@@ -519,11 +526,16 @@ function OptionSelected(optionNo)
     
     buttonclickAudioPlayer.play();
     setTimeout(()=>{
+      sendRewardsToApp(pollData.rewards);
       loadingAudioPlayer.play();
       animatePollStats(optionNo);
       sendPollstatsToServer(currentUser);
     },500);
    
+}
+function sendRewardsToApp( rewards)
+{
+  window.setRewards?.postMessage(JSON.stringify({coins: rewards[0], xp: rewards[1]}));
 }
 function animatePollStats(optionNo)
 {

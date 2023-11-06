@@ -1,4 +1,4 @@
-export class PollManager
+ class PollManager
 {
     //name choiceNo, choiceName and pollName
     constructor(users)
