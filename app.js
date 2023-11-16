@@ -64,7 +64,7 @@ function cacheUserDataFromApp(data)
   console.log(data);
   // const parsedData = data;
   let parsedData = JSON.parse(data);
-  if(parsedData.userName==''|| parsedData.email=='' )
+  if(parsedData.userName==null|| parsedData.email==null )
     parsedData = getLocalUserData();
   cachedUserData = parsedData;
   getPollInformation();
