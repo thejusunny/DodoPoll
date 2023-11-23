@@ -99,7 +99,7 @@ function loadSplashScreen()
     const animation1 = lottie.loadAnimation(animationConfig1);
     const animation2 = lottie.loadAnimation(animationConfig2);
     /* Start the application after user data is cached locally or from flutter app */
-    //cacheUserDataFromApp({email:'Athul@example.com', userName:'Athul'});
+    //cacheUserDataLocally({email:'jomaljose@gmail.com', userName:'jomal'});
     //cacheUserDataLocally(getLocalUserData());
  }
  const daysLabel = document.getElementById('l-days-poll');
@@ -174,7 +174,6 @@ async function getPollInformation()
       currentUser.email = cachedUserData?.email;
       currentUser.userName = cachedUserData?.userName;
       currentUser.pollName = pollData.pollName;
-
     });
 }
 const getUserEndPoint = "https://zgmb05jg6e.execute-api.ap-southeast-1.amazonaws.com/getUser";
@@ -284,14 +283,35 @@ async function checkForUser()
   const loginDiv = document.getElementById('div-login-poll');
   const loginButton = document.getElementById('btn-login-poll');
   loginButton.addEventListener('click',sendLoginEvent)
-  function sendLoginEvent()
-  {
+
+  /* Testing login from Flutter side */
+  // const testLoginButton = document.getElementById('login');
+  // testLoginButton.addEventListener('click', ()=>{
+  //   var jsonString = '{"userName":"Jomal", "email": "jomaljose@gmail.com", "image": null}';
+  //   loginSuccesful(jsonString);
+  // });
+function sendLoginEvent()
+{
     window.loginRequest?.postMessage("login"); 
     console.log("user trying to log in");
-  }
+}
+async function loginSuccesful(data) 
+{
+  const oldUser = currentUser;
+  deleteUser(oldUser.email);
+  const parsedData = JSON.parse(data);
+  currentUser.userName = parsedData?.userName;
+  currentUser.email = parsedData?.email;
+  currentUser.image = parsedData?.image;
+  loginDiv.style.display ='none';
+  await createUser(currentUser);
+  startInstruction = StartInstruction.OldUser;
+  pollEntry();
+  sendPollstatsToServer(currentUser);
+}
 
-  function checkForUserPresence()
-  {
+function checkForUserPresence()
+{
     const index = currentPollUsers.findIndex((user)=> user.email == currentUser.email);
     if(hasPollExpired())
     {
@@ -308,10 +328,13 @@ async function checkForUser()
     }
     else
     {
-      if(!isAGuestUser())
+      if(isAGuestUser())
       {
         loginDiv.style.display ='flex';
         loadingDiv.style.display = 'none';
+        const user = currentPollUsers[index];
+        currentUser.choiceNo = user.choiceNo;
+        currentUser.choiceName = user.choiceName;
         return;
       }
       else
@@ -322,8 +345,6 @@ async function checkForUser()
         updatePollUI();
         startInstruction = StartInstruction.OldUser;
       }
-     
-      
       
     }
   }
@@ -337,12 +358,12 @@ async function checkForUser()
     {
       if(isAGuestUser())
       {
-        console.log("Existing Guest User");
+        console.log("Existing Guest User" +currentUser.userName);
         showDisabledPollPage(true);
       }
       else
       {
-        console.log("Existing Signed In User");
+        console.log("Existing Signed In User"+ currentUser.userName);
         showDisabledPollPage(true);
       }
     }
@@ -359,18 +380,14 @@ async function checkForUser()
       poll2: localStorage.getItem('strength2'),
     };
   }
-  function showDisabledPollPage(realTime)
+  function showDisabledPollPage()
   {
-  
     splashDiv.style.display = 'none';
     pollManager = new PollManager(currentPollUsers);
-    if(!realTime)
-    {
-      pollManager.strength1 = getLocalPollStrength().poll1;
-      pollManager.strength2 = getLocalPollStrength().poll2;
-      const signInPrompt = document.getElementById("div-siginprompt-poll");
-      signInPrompt.style.display ='flex'
-    }
+    // pollManager.strength1 = getLocalPollStrength().poll1;
+    // pollManager.strength2 = getLocalPollStrength().poll2;
+      // const signInPrompt = document.getElementById("div-siginprompt-poll");
+      // signInPrompt.style.display ='flex'
     loadingAudioPlayer.play();
     animatePollStats(currentUser.choiceNo);
   }
@@ -522,6 +539,7 @@ function OptionSelected(optionNo)
     currentUser.choiceName = newUser.choiceName;
     currentUser.choiceNo = newUser.choiceNo;
     currentPollUsers.push(newUser);
+    console.log(currentPollUsers);
     pollManager = new PollManager(currentPollUsers);
     
     buttonclickAudioPlayer.play();
@@ -576,7 +594,6 @@ function sendPollstatsToServer(currentUser)
     choiceName: currentUser.choiceName,
     email: currentUser.email
   }
-  console.log(finalPayload);
   try
   {
   fetch(upsertStatsEndPoint, {
