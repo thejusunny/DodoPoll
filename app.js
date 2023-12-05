@@ -169,6 +169,7 @@ async function getPollInformation()
       
       pollData = new PollData(data.poll);
       showRemainingTime();
+      updatePollUI();
       console.log(data );
       checkForUser();
       currentUser.email = cachedUserData?.email;
@@ -322,7 +323,6 @@ function checkForUserPresence()
     if(index<0)
     {
       console.log("New user");
-      updatePollUI();
       startInstruction = StartInstruction.NewUser;
       //startPoll();
     }
@@ -342,12 +342,12 @@ function checkForUserPresence()
         const user = currentPollUsers[index];
         currentUser.choiceNo = user.choiceNo;
         currentUser.choiceName = user.choiceName;
-        updatePollUI();
         startInstruction = StartInstruction.OldUser;
       }
       
     }
   }
+  const pollPage = document.getElementById("poll-page");
   function pollEntry()
   {
     if(startInstruction == StartInstruction.NewUser)
@@ -359,12 +359,12 @@ function checkForUserPresence()
       if(isAGuestUser())
       {
         console.log("Existing Guest User" +currentUser.userName);
-        showDisabledPollPage(true);
+        showDisabledPollPage();
       }
       else
       {
         console.log("Existing Signed In User"+ currentUser.userName);
-        showDisabledPollPage(true);
+        showDisabledPollPage();
       }
     }
   }
@@ -382,6 +382,7 @@ function checkForUserPresence()
   }
   function showDisabledPollPage()
   {
+    pollPage.style.display ='flex';
     splashDiv.style.display = 'none';
     pollManager = new PollManager(currentPollUsers);
     // pollManager.strength1 = getLocalPollStrength().poll1;
@@ -397,6 +398,7 @@ function checkForUserPresence()
   }
   function startPoll()
   {
+    pollPage.style.display ='flex';
     splashDiv.style.display = 'none';
   }
   function deleteUser(email)
