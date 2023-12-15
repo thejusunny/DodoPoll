@@ -46,7 +46,7 @@ class Animation {
       const value = this.calculateValue(time);
       this.obj.style.bottom = value.prefixedValue;
       if (this.textObj) {
-        this.textObj.textContent = value.orginalValue.toFixed(0) + this.units;
+        this.textObj.textContent = Math.min (value.orginalValue.toFixed(0),this.offset.end) + this.units;
       }
       if (value.orginalValue < this.offset.end) {
         requestAnimationFrame(this.changeBottomPivot);
